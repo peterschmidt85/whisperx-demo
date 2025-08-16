@@ -14,6 +14,11 @@ dstack apply -f .dstack.yml \
     -e AUDIO_URL="https://example.com/audio.wav"
 ```
 
+The task prints transcription results to stdout. You can also access logs later with:
+```bash
+dstack logs whisperx-demo
+```
+
 ## Configuration
 
 **Required:**
@@ -24,7 +29,6 @@ dstack apply -f .dstack.yml \
 - `MODEL`: WhisperX model ("large-v2", "medium", "small")
 - `MIN_SPEAKERS`/`MAX_SPEAKERS`: Speaker diarization limits
 - `HF_TOKEN`: Hugging Face token for gated models
-- `OUTPUT_FORMAT`: Output formats (default: "srt,txt,json")
 
 ## GPU & Spot Instances
 
@@ -47,5 +51,9 @@ dstack apply -f .dstack.yml --gpu 24GB --spot \
 ```
 
 GPU patterns: `1`, `24GB`, `24GB..40GB`, `H100:2`
+
+## Output to Hugging Face
+
+Modify `.dstack.yml` to upload transcription results from `./output` directly to Hugging Face instead `cat ./output/audio_file.txt`.
 
 **More info:** [dstack Documentation](https://dstack.ai/docs/)

@@ -22,8 +22,9 @@ commands:
       ${MIN_SPEAKERS:+--min_speakers $MIN_SPEAKERS} \
       ${MAX_SPEAKERS:+--max_speakers $MAX_SPEAKERS} \
       ${LANGUAGE:+--language $LANGUAGE} \
+      --output_dir ./output \
       ./audio_file
-  - cat ./audio_file.txt
+  - cat ./output/audio_file.txt
 
 resources:
   gpu: 1
