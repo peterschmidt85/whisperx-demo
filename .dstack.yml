@@ -1,0 +1,19 @@
+type: task
+
+env:
+  - AUDIO_URL
+  - LANGUAGE=
+  - MODEL=
+
+python: 3.12
+command:
+  - apt update && apt install -y libcudnn8 libcudnn8-dev ffmpeg
+  - uv pip install whisperx
+  - |
+    uv run whisperx \
+      ${MODEL:+--model $MODEL} \
+      ${LANGUAGE:+--language $LANGUAGE} 
+      $AUDIO_URL
+
+resources:
+  gpu: 1
