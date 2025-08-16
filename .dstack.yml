@@ -1,19 +1,29 @@
 type: task
+name: whisperx-demo
 
 env:
   - AUDIO_URL
   - LANGUAGE=
   - MODEL=
+  - MIN_SPEAKERS=
+  - MAX_SPEAKERS=
+  - HF_TOKEN=
 
 python: 3.12
-command:
-  - apt update && apt install -y libcudnn8 libcudnn8-dev ffmpeg
+commands:
+  - apt update
+  - apt install -y libcudnn8 libcudnn8-dev ffmpeg
   - uv pip install whisperx
+  - wget "$AUDIO_URL" -O ./audio_file
   - |
     uv run whisperx \
       ${MODEL:+--model $MODEL} \
-      ${LANGUAGE:+--language $LANGUAGE} 
-      $AUDIO_URL
+      ${HF_TOKEN:+--hf_token $HF_TOKEN} \
+      ${MIN_SPEAKERS:+--min_speakers $MIN_SPEAKERS} \
+      ${MAX_SPEAKERS:+--max_speakers $MAX_SPEAKERS} \
+      ${LANGUAGE:+--language $LANGUAGE} \
+      ./audio_file
+  - cat ./audio_file.txt
 
 resources:
   gpu: 1
