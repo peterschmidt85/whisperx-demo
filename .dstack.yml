@@ -7,14 +7,20 @@ env:
   - MODEL=
   - MIN_SPEAKERS=
   - MAX_SPEAKERS=
-  - HF_TOKEN=
+  # Requried if DIARIZE is enabled
+  - HF_TOKEN
+  - DIARIZE=true
+  - HIGHLIGHT_WORDS=
+  # Required for storing cache on a volume
+  - UV_LINK_MODE=copy
 
 python: 3.12
 commands:
   - apt update
   - apt install -y libcudnn8 libcudnn8-dev ffmpeg
   - uv pip install whisperx
-  - wget "$AUDIO_URL" -O ./audio_file
+  - mkdir -p /root/.cache/whisperx
+  - wget "$AUDIO_URL" -O /root/.cache/whisperx/$DSTACK_RUN_NAME
   - |
     uv run whisperx \
       ${MODEL:+--model $MODEL} \
@@ -22,9 +28,20 @@ commands:
       ${MIN_SPEAKERS:+--min_speakers $MIN_SPEAKERS} \
       ${MAX_SPEAKERS:+--max_speakers $MAX_SPEAKERS} \
       ${LANGUAGE:+--language $LANGUAGE} \
+      ${DIARIZE:+--diarize} \
+      ${HIGHLIGHT_WORDS:+--highlight_words} \
       --output_dir ./output \
-      ./audio_file
-  - cat ./output/audio_file.txt
+      /root/.cache/whisperx/$DSTACK_RUN_NAME
+  - curl https://bashupload.com/ -T ./output/$DSTACK_RUN_NAME.json
+  - curl https://bashupload.com/ -T ./output/$DSTACK_RUN_NAME.txt
+
+volumes:
+  - instance_path: /root/.cache
+    path: /root/.cache
+    optional: true
 
 resources:
   gpu: 1
+
+spot_policy: auto # Use spot if available
+creation_policy: reuse # Create a fleet before

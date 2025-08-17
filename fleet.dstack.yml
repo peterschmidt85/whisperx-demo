@@ -1,0 +1,11 @@
+type: fleet
+name: my-fleet
+
+nodes: 0..2
+
+resources:
+  gpu: 1
+
+idle_duration: 1h
+
+spot_policy: spot
